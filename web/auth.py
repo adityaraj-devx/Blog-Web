@@ -12,7 +12,7 @@ def signup():
 
 @auth.route("/forgot")
 def forgot():
-    return render_template("forgot.html", hide_nav=True)  
+    return render_template("forgot.html", hide_nav=True) 
 
 @auth.route("/logout")
 def logout():
