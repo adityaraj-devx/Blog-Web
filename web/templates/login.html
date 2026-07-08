@@ -1,24 +1,16 @@
 {% extends "layout.html" %} {% block title %}Login{% endblock %} {% block
 content %}
 <div class="box">
-  <div class="container" id="container">
-    <div class="header">
-      <br />
-      <br />
-      <h1>Login</h1>
-    </div>
-    <form action="">
-      <label for="">Email</label>
-      <input type="email" name="" id="" />
-      <label for="">Password</label>
-      <input type="password" />
+    <form method="post" class="login-wrap">
+      <h2>Login</h2>
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" />
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password"/>
       <a href="{{ url_for('auth.forgot') }}">Forgot Password</a>
-      <input type="submit" value="Log In" />
-    </form>
-    <div class="footer">
+      <button type="submit">Login</button>
       <h3>Not a member yet?</h3>
       <a href="{{ url_for('auth.signup') }}">Sign Up</a>
-    </div>
-  </div>
+    </form>
 </div>
 {% endblock %}
