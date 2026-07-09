@@ -14,7 +14,8 @@ def base():
 @routes.route("/home")
 @login_required
 def home():
-    return render_template("home.html", name=current_user.username)
+    posts = Post.query.all()
+    return render_template("home.html", name=current_user, posts=posts)
 
 @routes.route("/create-post", methods=["GET", "POST"])
 @login_required
