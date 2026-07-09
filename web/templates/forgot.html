@@ -1,0 +1,15 @@
+{% extends "layout.html" %} {% block title %}Login{% endblock %} {% block
+content %}
+<div class="box">
+    <form method="post" class="login-wrap">
+      <h2>Forgot Password</h2>
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" />
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password"/>
+      <label for="confirm-password">Confirm Password</label>
+      <input type="password" id="confirm-password" name="confirm-password"/>
+      <button type="submit">Reset Password</button>
+    </form>
+</div>
+{% endblock %}

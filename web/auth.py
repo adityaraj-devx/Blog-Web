@@ -27,7 +27,7 @@ def login():
         else:
             flash('Emial does not exists.', category='error')
 
-    return render_template("login.html", hide_nav=True)
+    return render_template("login.html", user=current_user, hide_nav=True)
 
 @auth.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -60,14 +60,33 @@ def signup():
             flash('Account created!')
             return redirect(url_for('routes.home'))
 
-    return render_template("signup.html", hide_nav=True)
+    return render_template("signup.html",user=current_user, hide_nav=True)
 
-@auth.route("/forgot")
+@auth.route("/forgot", methods=['GET', 'POST'])
 def forgot():
+    if request.method == 'POST':
+        email = request.form.get("email")
+        new_password = request.form.get("password")
+        confirm_password = request.form.get("confirm-password")
+
+        user = User.query.filter_by(email=email).first()
+
+        if not user:
+            flash('No account found with that email.', category='error')
+        elif new_password != confirm_password:
+            flash('Passwords do not match.', category='error')
+        elif len(new_password) < 6:
+            flash('Password is too short.', category='error')
+        else:
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            flash('Password updated! You can now log in.', category='success')
+            return redirect(url_for('auth.login'))
+
     return render_template("forgot.html", hide_nav=True) 
 
 @auth.route("/logout")
 @login_required
 def logout():
-    logout_user(current_user)
+    logout_user()
     return redirect(url_for("routes.base"))
