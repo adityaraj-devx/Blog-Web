@@ -1,0 +1,50 @@
+{% extends "layout.html" %} {% block title %}{% endblock %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1>{% block header %} POSTS {% endblock %}</h1>
+
+  {% block create_post_button %}
+  {% endblock %}
+</div>
+
+<div id="posts">
+  {% for post in posts %}
+  <div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <a href="{{ url_for('routes.posts', username=post.user.username) }}">
+        {{ post.user.username }}
+      </a>
+
+      {% if user.id == post.author %}
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary dropdown-toggle"
+          data-bs-toggle="dropdown"
+        ></button>
+
+        <ul class="dropdown-menu">
+          <li>
+            <a
+              class="dropdown-item"
+              href="{{ url_for('routes.delete_post', id=post.id) }}"
+            >
+              Delete
+            </a>
+          </li>
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <div class="card-text">{{ post.text }}</div>
+    </div>
+
+    <div class="card-footer text-muted">
+      {{ post.date.strftime("%d %B %Y, %I:%M %p") }}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% block footer %} {% endblock %} {% endblock %}
