@@ -19,7 +19,7 @@ def create_app():
     from  .routes import routes
     from .auth import auth
     
-    from .models import User, Post, Comment
+    from .models import User, Post, Comment, Like
 
     create_database(app)
 

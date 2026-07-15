@@ -1,5 +1,5 @@
 from . import db
-from .models import Post, User, Comment
+from .models import Post, User, Comment, Like
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 
@@ -95,3 +95,27 @@ def delete_comment(comment_id):
         db.session.commit()
 
     return redirect(url_for('routes.home'))
+
+
+@routes.route("/like-post/<post_id>", methods=["GET"])
+@login_required
+def like(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+
+    if not post:
+        flash("Post does not exist.", category="error")
+    else:
+        like = Like.query.filter_by(
+            author=current_user.id,
+            post_id=post_id
+        ).first()
+
+        if like:
+            db.session.delete(like)
+        else:
+            like = Like(author=current_user.id, post_id=post_id)
+            db.session.add(like)
+
+        db.session.commit()
+
+    return redirect(url_for("routes.home"))
