@@ -1,7 +1,7 @@
 from . import db
 from .models import Post, User, Comment, Like
 from flask_login import login_required, current_user
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 
 routes = Blueprint("routes", __name__)
 
@@ -64,13 +64,14 @@ def posts(username):
     return render_template('posts.html', user=current_user, posts=posts, username=username)
 
 @routes.route("/create-comment/<post_id>", methods=["POST"])
+@login_required
 def create_comment(post_id):
     text = request.form.get('text')
 
     if not text:
         flash('Comment cannot be empty.', category='error')
     else:
-        post = Post.query.filter_by(id=post_id)
+        post = Post.query.filter_by(id=post_id).first()
         if post:
             comment = Comment(text=text, author=current_user.id, post_id=post_id)
             db.session.add(comment)
@@ -97,25 +98,31 @@ def delete_comment(comment_id):
     return redirect(url_for('routes.home'))
 
 
-@routes.route("/like-post/<post_id>", methods=["GET"])
+@routes.route("/like-post/<post_id>", methods=["POST"])
 @login_required
 def like(post_id):
     post = Post.query.filter_by(id=post_id).first()
 
     if not post:
-        flash("Post does not exist.", category="error")
+        return jsonify({"error": "Post does not exist."}), 400
+
+    like = Like.query.filter_by(
+        author=current_user.id,
+        post_id=post_id
+    ).first()
+
+    if like:
+        db.session.delete(like)
     else:
-        like = Like.query.filter_by(
-            author=current_user.id,
-            post_id=post_id
-        ).first()
+        db.session.add(
+            Like(author=current_user.id, post_id=post_id)
+        )
 
-        if like:
-            db.session.delete(like)
-        else:
-            like = Like(author=current_user.id, post_id=post_id)
-            db.session.add(like)
+    db.session.commit()
 
-        db.session.commit()
+    liked = any(l.author == current_user.id for l in post.likes)
 
-    return redirect(url_for("routes.home"))
+    return jsonify({
+        "likes": len(post.likes),
+        "liked": liked
+    })
