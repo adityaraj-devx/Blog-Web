@@ -1,8 +1,8 @@
 {% extends "post_container.html" %} {% block title %} {{ username }}'s Posts {%
 endblock %} {% block header %} {{ username }}'s Posts {% endblock %} {% block
 footer %}
-<div class="text-center mt-3">
-  <a href="{{ url_for('routes.home') }}" class="btn btn-primary btn-lg">
+<div class="back-link-wrap">
+  <a href="{{ url_for('routes.home') }}" class="button button--primary button--large">
     Back
   </a>
 </div>

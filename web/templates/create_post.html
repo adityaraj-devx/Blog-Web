@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
-{% block title %}{% endblock %}
+{% block title %}New post{% endblock %}
 {% block content %}
-<div class="create-post">
+<div class="compose-page">
     <h2>Make a post</h2>
-    <form method="post" class="blog-post">
+    <form method="post" class="compose-form">
         <input type="text" name="title" id="title" placeholder="Title" />
-        <textarea name="text" id="text" class="form-control"></textarea>
-        <button type="submit">Post</button>
+        <textarea name="text" id="text" class="compose-textarea"></textarea>
+        <button type="submit" class="button button--primary">Post</button>
     </form>
 </div>
 {% endblock %}

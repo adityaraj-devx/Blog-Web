@@ -1,11 +1,9 @@
-{% extends "post_container.html" %} 
-{% block title %}
-Home
+{% extends "post_container.html" %}
+{% block title %}Home{% endblock %}
 {% block create_post_button %}
 <a href="{{ url_for('routes.create_post') }}">
-    <button type="button" class="btn btn-primary btn-lg">
+    <button type="button" class="button button--primary button--large">
         Create a Post
     </button>
 </a>
-{% endblock %}
 {% endblock %}

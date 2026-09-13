@@ -1,19 +1,19 @@
 {% extends "layout.html" %} {% block title %}{% endblock %} {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1>{% block header %} POSTS {% endblock %}</h1>
+<div class="page-header">
+  <h1>{% block header %}Posts{% endblock %}</h1>
 
   {% block create_post_button %} {% endblock %}
 </div>
 
 <div id="posts">
   {% for post in posts %}
-  <div class="card mb-3">
-    <div class="card-header d-flex justify-content-between align-items-center">
+  <div class="post">
+    <div class="post-header">
       <a href="{{ url_for('routes.posts', username=post.user.username) }}">
         {{ post.user.username }}
       </a>
 
-      <div>
+      <div class="post-actions">
         <span id="likes-count-{{post.id}}">{{ post.likes|length }}</span>
         {% if user.id in post.likes|map(attribute="author")|list %}
         <i class="fas fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
@@ -21,17 +21,18 @@
         <i class="far fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
         {% endif %}
         {% if user.id == post.author %}
-      <div class="btn-group">
+      <div class="post-menu">
         <button
           type="button"
-          class="btn btn-sm btn-primary dropdown-toggle"
+          class="post-menu-toggle"
           data-bs-toggle="dropdown"
+          aria-expanded="false"
         ></button>
 
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu post-menu-list">
           <li>
             <a
-              class="dropdown-item"
+              class="post-menu-item"
               href="{{ url_for('routes.delete_post', id=post.id) }}"
             >
               Delete
@@ -43,36 +44,37 @@
       </div>
     </div>
 
-    <div class="card-body">
-      <h2>{{ post.title }}</h2>
-      <div class="card-text">{{ post.text }}</div>
+    <div class="post-body">
+      <h2 class="post-title">{{ post.title }}</h2>
+      <div class="post-text">{{ post.text }}</div>
       <br />
-      <div class="collapse" id="comments-{{post.id}}">
-        <div class="card">
-          <div class="card-body" id="comments-expanded-{{post.id}}">
+      <div class="comments-panel" id="comments-{{post.id}}">
+        <div class="comments-panel-inner">
+          <div class="comments-list" id="comments-expanded-{{post.id}}">
             {% for comment in post.comments%}
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
+            <div class="comment-row">
+              <div class="comment-text">
                 <a href="/posts/{{comment.user.username}}"
                   >{{comment.user.username}}</a
                 >: {{ comment.text }}
               </div>
-              <div>
-                <small class="text-muted"
+              <div class="comment-meta">
+                <small class="comment-date"
                   >{{ post.date.strftime("%d %B %Y, %I:%M %p") }}</small
                 >
                 {% if user.id == comment.author or user.id == post.author %}
-                <div class="btn-group">
+                <div class="comment-menu">
                   <button
                     type="button"
-                    class="btn btn-sm btn-primary dropdown-toggle"
+                    class="comment-menu-toggle"
                     data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   ></button>
 
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu comment-menu-list">
                     <li>
                       <a
-                        class="dropdown-item"
+                        class="comment-menu-item"
                         href="/delete-comment/{{comment.id}}"
                       >
                         Delete
@@ -87,26 +89,26 @@
           </div>
         </div>
       </div>
-      <p class="card-text">
+      <p class="comments-toggle-wrap">
         {% if post.comments|length > 0 %}
-        <a href="#comments-{{post.id}}" data-bs-toggle="collapse" role="button">
+        <a href="#comments-{{post.id}}" class="comments-toggle" data-bs-toggle="collapse" role="button">
           <small>View {{post.comments|length}} Comments</small>
         </a>
         {% else %}
-        <small class="text-muted">No Comments</small>
+        <small class="no-comments">No Comments</small>
         {% endif %}
       </p>
       <form
-        class="input-group"
+        class="comment-form"
         method="POST"
         action="/create-comment/{{post.id}}"
       >
-        <input type="text" , id="text" , name="text" placeholder="Comment" />
-        <button type="submit" class="btn btn-primary">Comment</button>
+        <input type="text" id="text" name="text" placeholder="Comment" />
+        <button type="submit" class="button button--primary">Comment</button>
       </form>
     </div>
 
-    <div class="card-footer text-muted">
+    <div class="post-footer">
       {{ post.date.strftime("%d %B %Y, %I:%M %p") }}
     </div>
   </div>
